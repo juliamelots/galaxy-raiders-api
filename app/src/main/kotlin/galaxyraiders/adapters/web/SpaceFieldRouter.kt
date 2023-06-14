@@ -1,5 +1,6 @@
 package galaxyraiders.adapters.web
 
+import galaxyraiders.core.game.Explosion
 import galaxyraiders.core.game.Asteroid
 import galaxyraiders.core.game.Missile
 import galaxyraiders.core.game.SpaceField
@@ -12,8 +13,9 @@ import io.javalin.http.Context
 class SpaceFieldRouter : Router, Visualizer {
   data class SpaceFieldDTO(
     val ship: SpaceShip,
-    val asteroids: List<Asteroid>,
     val missiles: List<Missile>,
+    val asteroids: List<Asteroid>,
+    val explosions: List<Explosion>
   )
 
   var dto: SpaceFieldDTO? = null
@@ -32,8 +34,9 @@ class SpaceFieldRouter : Router, Visualizer {
   override fun renderSpaceField(field: SpaceField) {
     this.dto = SpaceFieldDTO(
       ship = field.ship,
-      asteroids = field.asteroids,
       missiles = field.missiles,
+      asteroids = field.asteroids,
+      explosions = field.explosions
     )
   }
 }

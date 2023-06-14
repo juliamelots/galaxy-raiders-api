@@ -1,5 +1,7 @@
 package galaxyraiders.core.game
 
+import galaxyraiders.core.physics.Point2D
+import galaxyraiders.core.physics.Vector2D
 import galaxyraiders.helpers.AverageValueGeneratorStub
 import galaxyraiders.helpers.ControllerSpy
 import galaxyraiders.helpers.MaxValueGeneratorStub
@@ -109,7 +111,7 @@ class GameEngineTest {
   }
 
   @Test
-  fun `it handle collisions between objects`() {
+  fun `it handles collisions between objects`() {
     // Degenerate scenario: both asteroids will be above each other
     hardGame.generateAsteroids()
     hardGame.generateAsteroids()
@@ -123,6 +125,28 @@ class GameEngineTest {
       hardGame.field.asteroids.map { it.velocity }
 
     assertNotEquals(asteroidsInitialVelocity, asteroidsFinalVelocity)
+  }
+
+  @Test
+  fun `it handles collisions between missiles and asteroids`() {
+    val explosionPosition = Point2D(0.0, 0.0)
+
+    hardGame.generateAsteroids()
+    hardGame.field.generateMissile()
+
+    var asteroid = hardGame.field.asteroids.last()
+    var missile = hardGame.field.missiles.last()
+    val dx = asteroid.center.x - missile.center.x
+    val dy = asteroid.center.y - missile.center.y
+
+    missile.shift(Vector2D(dx, dy) - missile.velocity)
+    missile.move()
+
+    val expectedExplosionsSize = hardGame.field.explosions.size + 1
+    
+    hardGame.handleCollisions()
+    
+    assertEquals(expectedExplosionsSize, hardGame.field.explosions.size)
   }
 
   @Test
@@ -151,6 +175,22 @@ class GameEngineTest {
   }
 
   @Test
+  fun `it can update its explosions`() {
+    hardGame.field.generateExplosion(Point2D(0.0, 0.0))
+    
+    val explosion = hardGame.field.explosions.last()
+    val expectedExplosionTimer = EXPLOSION_LIFE_TIME - 1
+    val expectedExplosionTrigger = false
+
+    hardGame.updateExplosions()
+
+    assertAll(
+      { assertEquals(expectedExplosionTimer, explosion.timer) },
+      { assertEquals(expectedExplosionTrigger, explosion.isTriggered) },
+    )
+  }
+  
+  @Test
   fun `it can trim its space objects`() {
     hardGame.field.generateAsteroid()
     hardGame.field.generateMissile()
@@ -178,12 +218,17 @@ class GameEngineTest {
       hardGame.moveSpaceObjects()
     }
 
+    hardGame.field.generateExplosion(Point2D(0.0, 0.0))
+    val explosion = hardGame.field.explosions.last()
+    repeat(EXPLOSION_LIFE_TIME) { explosion.update() }
+
     hardGame.trimSpaceObjects()
 
     assertAll(
       "GameEngine should trim all space objects",
       { assertEquals(-1, hardGame.field.missiles.indexOf(missile)) },
       { assertEquals(-1, hardGame.field.asteroids.indexOf(asteroid)) },
+      { assertEquals(-1, hardGame.field.explosions.indexOf(explosion)) },
     )
   }
 

@@ -81,6 +81,15 @@ class SpaceFieldTest {
   }
 
   @Test
+  fun `it starts with no explosions`() {
+    assertAll(
+      "SpaceField should initialize an empty list of explosions",
+      { assertNotNull(spaceField.explosions) },
+      { assertEquals(0, spaceField.explosions.size) },
+    )
+  }
+
+  @Test
   fun `it has a list of objects with ship, missiles and asteroids`() {
     val ship = spaceField.ship
 
@@ -90,8 +99,11 @@ class SpaceFieldTest {
     spaceField.generateAsteroid()
     val asteroid = spaceField.asteroids.last()
 
+    spaceField.generateExplosion(Point2D(0.0, 0.0))
+    val explosion = spaceField.explosions.last()
+
     val expectedSpaceObjects = listOf<SpaceObject>(
-      ship, missile, asteroid
+      ship, missile, asteroid, explosion
     )
 
     assertEquals(expectedSpaceObjects, spaceField.spaceObjects)
@@ -218,6 +230,23 @@ class SpaceFieldTest {
   }
 
   @Test
+  fun `it can update its explosions`() {
+    spaceField.generateExplosion(Point2D(0.0, 0.0))
+
+    val explosion = spaceField.explosions.last()
+    val expectedExplosionTimer = EXPLOSION_LIFE_TIME - 1
+    val expectedExplosionTrigger = false
+
+    spaceField.updateExplosions()
+
+    
+    assertAll(
+      { assertEquals(expectedExplosionTimer, explosion.timer) },
+      { assertEquals(expectedExplosionTrigger, explosion.isTriggered) },
+    )
+  }
+
+  @Test
   fun `it can generate a new missile`() {
     val numMissiles = spaceField.missiles.size
     spaceField.generateMissile()
@@ -258,6 +287,14 @@ class SpaceFieldTest {
     spaceField.generateAsteroid()
 
     assertEquals(numAsteroids + 1, spaceField.asteroids.size)
+  }
+
+  @Test
+  fun `it can generate a new explosion`() {
+    val numExplosions = spaceField.explosions.size
+    spaceField.generateExplosion(Point2D(0.0, 0.0))
+
+    assertEquals(numExplosions + 1, spaceField.explosions.size)
   }
 
   @ParameterizedTest(name = "({0})")
@@ -375,6 +412,32 @@ class SpaceFieldTest {
     spaceField.trimAsteroids()
 
     assertNotEquals(-1, spaceField.asteroids.indexOf(asteroid))
+  }
+
+  @Test
+  fun `it can remove triggered explosions`() {
+    spaceField.generateExplosion(Point2D(0.0, 0.0))
+
+    val explosion = spaceField.explosions.last()
+
+    repeat(EXPLOSION_LIFE_TIME) { explosion.update() }
+
+    spaceField.trimExplosions()
+
+    assertEquals(-1, spaceField.explosions.indexOf(explosion))
+  }
+
+  @Test
+  fun `it does not remove untriggered explosions`() {
+    spaceField.generateExplosion(Point2D(0.0, 0.0))
+
+    val explosion = spaceField.explosions.last()
+
+    repeat(EXPLOSION_LIFE_TIME-1) { explosion.update() }
+
+    spaceField.trimExplosions()
+
+    assertNotEquals(-1, spaceField.explosions.indexOf(explosion))
   }
 
   private companion object {
