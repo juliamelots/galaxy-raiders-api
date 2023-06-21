@@ -6,8 +6,12 @@ import galaxyraiders.ports.ui.Controller
 import galaxyraiders.ports.ui.Controller.PlayerCommand
 import galaxyraiders.ports.ui.Visualizer
 import kotlin.system.measureTimeMillis
+import java.io.File
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 const val MILLISECONDS_PER_SECOND: Int = 1000
+const val SCORE_BOARD_PATH: String = "../score/Scoreboard.json"
+const val LEADER_BOARD_PATH: String = "../score/Leaderboard.json"
 
 object GameEngineConfig {
   private val config = Config(prefix = "GR__CORE__GAME__GAME_ENGINE__")
@@ -43,12 +47,18 @@ class GameEngine(
         maxOf(0, GameEngineConfig.msPerFrame - duration)
       )
     }
+
+    updateScoreBoard(this.field.score)
+    updateLeaderBoard()
   }
 
   fun execute(maxIterations: Int) {
     repeat(maxIterations) {
       this.tick()
     }
+
+    updateScoreBoard(this.field.score)
+    updateLeaderBoard()
   }
 
   fun tick() {
@@ -92,9 +102,15 @@ class GameEngine(
         first.collideWith(second, GameEngineConfig.coefficientRestitution)
         if ((first is Asteroid && second is Missile) || (first is Missile && second is Asteroid)) {
           this.field.generateExplosion(first.center)
+          this.field.score.destroyedAsteroids++
+          this.field.score.finalScore += if (first is Asteroid) explosionScore(first) else explosionScore(second)
         }
       }
     }
+  }
+
+  fun explosionScore(asteroid: Asteroid): Float {
+    return asteroid.mass + asteroid.radius * 0.5
   }
 
   fun updateExplosions() {
@@ -123,6 +139,28 @@ class GameEngine(
 
   fun renderSpaceField() {
     this.visualizer.renderSpaceField(this.field)
+  }
+
+  fun updateScoreBoard(newScore: Score) {
+    val textString = File(SCORE_BOARD_PATH).readText()
+    val mapper = jacksonObjectMapper()
+    val scoreList: MutableList<Score> = mapper.readValue(textString)
+    //val scoreList: MutableList<Score> = Json.decodeFromString<MutableList<Score>>(jsonString)
+    scoreList.add(newScore)
+    //val jsonData = Json.encodeToString(scoreList)
+    val jsonData = mapper.writeValueAsString(scoreList)
+    File(SCORE_BOARD_PATH).writeText(jsonData)
+  }
+
+  fun updateLeaderBoard() {
+    val textString = File(LEADER_BOARD_PATH).readText()
+    val mapper = jacksonObjectMapper()
+    val scoreList: MutableList<Score> = mapper.readValue(textString)
+    //var scoreList: MutableList<Score> = Json.decodeFromString<MutableList<Score>>(textString)
+    scoreList.sortedByDescending { it.finalScore }
+    //val jsonData = Json.encodeToString(listOf(scoreList[0], scoreList[1], scoreList[2]))
+    val jsonData = mapper.writeValueAsString(listOf(scoreList[0], scoreList[1], scoreList[2]))
+    File(LEADER_BOARD_PATH).writeText(jsonData)
   }
 }
 

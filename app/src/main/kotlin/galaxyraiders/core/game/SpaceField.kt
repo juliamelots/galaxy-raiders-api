@@ -4,6 +4,8 @@ import galaxyraiders.Config
 import galaxyraiders.core.physics.Point2D
 import galaxyraiders.core.physics.Vector2D
 import galaxyraiders.ports.RandomGenerator
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object SpaceFieldConfig {
   private val config = Config(prefix = "GR__CORE__GAME__SPACE_FIELD__")
@@ -29,6 +31,8 @@ object SpaceFieldConfig {
 data class SpaceField(val width: Int, val height: Int, val generator: RandomGenerator) {
   val boundaryX = 0.0..width.toDouble()
   val boundaryY = 0.0..height.toDouble()
+
+  val score = Score(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), 0, 0)
 
   val ship = initializeShip()
 
