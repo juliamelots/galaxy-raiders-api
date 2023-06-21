@@ -109,8 +109,8 @@ class GameEngine(
     }
   }
 
-  fun explosionScore(asteroid: Asteroid): Float {
-    return asteroid.mass + asteroid.radius * 0.5
+  fun explosionScore(asteroid: SpaceObject): Double {
+    return asteroid.mass + asteroid.radius / 2
   }
 
   fun updateExplosions() {

@@ -32,7 +32,7 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
   val boundaryX = 0.0..width.toDouble()
   val boundaryY = 0.0..height.toDouble()
 
-  val score = Score(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), 0, 0)
+  val score = Score(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")), 0.0, 0)
 
   val ship = initializeShip()
 

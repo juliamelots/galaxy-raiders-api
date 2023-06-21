@@ -5,6 +5,6 @@ package galaxyraiders.core.game
 //@Serializable
 data class Score (
     var dateTime: String = "",
-    var finalScore: Int = 0,
+    var finalScore: Double = 0.0,
     var destroyedAsteroids: Int = 0
 )
