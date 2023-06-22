@@ -3,21 +3,20 @@ package galaxyraiders.core.game
 import galaxyraiders.core.physics.Point2D
 import galaxyraiders.core.physics.Vector2D
 
-const val EXPLOSION_LIFE_TIME: Int = 15
-
 class Explosion(
-  initialPosition: Point2D
+  val lifeTime: Int,
+  initialPosition: Point2D,
+  radius: Double,
+  mass: Double
 ) :
-  SpaceObject("Explosion", '*', initialPosition, Vector2D(0.0, 0.0), 2.0, 2.0) {
+  SpaceObject("Explosion", '*', initialPosition, Vector2D(0.0, 0.0), radius, mass) {
   var isTriggered: Boolean = false
 
-  var timer: Int = EXPLOSION_LIFE_TIME
+  var timer: Int = lifeTime
     private set
-  
+
   fun update() {
     this.timer--
-    if (this.timer <= 0) {
-      this.isTriggered = true
-    }
+    this.isTriggered = (this.timer <= 0)
   }
 }

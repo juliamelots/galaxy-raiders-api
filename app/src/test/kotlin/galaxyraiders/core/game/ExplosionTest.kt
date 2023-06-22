@@ -9,9 +9,10 @@ import kotlin.test.assertTrue
 
 @DisplayName("Given an explosion")
 class ExplosionTest {
-  private val explosion = Explosion(
-    initialPosition = Point2D(1.0, 1.0)
-  )
+  private val explosion = Explosion(lifeTime = SpaceFieldConfig.explosionLifeTime,
+                                    initialPosition = Point2D(0.0, 0.0),
+                                    radius = SpaceFieldConfig.explosionRadius,
+                                    mass = SpaceFieldConfig.explosionMass)
 
   @Test
   fun `it has a type Explosion `() {
@@ -30,7 +31,7 @@ class ExplosionTest {
 
   @Test
   fun `it is triggered after EXPLOSION_LIFE_TIME frames `() {
-    repeat(EXPLOSION_LIFE_TIME) { explosion.update() }
+    repeat(explosion.lifeTime) { explosion.update() }
     assertTrue(explosion.isTriggered)
   }
 }

@@ -129,8 +129,6 @@ class GameEngineTest {
 
   @Test
   fun `it handles collisions between missiles and asteroids`() {
-    val explosionPosition = Point2D(0.0, 0.0)
-
     hardGame.generateAsteroids()
     hardGame.field.generateMissile()
 
@@ -179,7 +177,7 @@ class GameEngineTest {
     hardGame.field.generateExplosion(Point2D(0.0, 0.0))
     
     val explosion = hardGame.field.explosions.last()
-    val expectedExplosionTimer = EXPLOSION_LIFE_TIME - 1
+    val expectedExplosionTimer = explosion.lifeTime - 1
     val expectedExplosionTrigger = false
 
     hardGame.updateExplosions()
@@ -220,7 +218,7 @@ class GameEngineTest {
 
     hardGame.field.generateExplosion(Point2D(0.0, 0.0))
     val explosion = hardGame.field.explosions.last()
-    repeat(EXPLOSION_LIFE_TIME) { explosion.update() }
+    repeat(explosion.lifeTime) { explosion.update() }
 
     hardGame.trimSpaceObjects()
 

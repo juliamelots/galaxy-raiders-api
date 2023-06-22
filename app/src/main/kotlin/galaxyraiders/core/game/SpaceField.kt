@@ -25,6 +25,10 @@ object SpaceFieldConfig {
   val asteroidMinMass = config.get<Int>("ASTEROID_MIN_MASS")
   val asteroidMaxMass = config.get<Int>("ASTEROID_MAX_MASS")
   val asteroidMassMultiplier = config.get<Double>("ASTEROID_MASS_MULTIPLIER")
+
+  val explosionLifeTime = config.get<Int>("EXPLOSION_LIFE_TIME")
+  val explosionRadius = config.get<Double>("EXPLOSION_RADIUS")
+  val explosionMass = config.get<Double>("EXPLOSION_MASS")
 }
 
 @Suppress("TooManyFunctions")
@@ -73,7 +77,10 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
   }
 
   fun generateExplosion(position: Point2D) {
-    var explosion = Explosion(initialPosition = position)
+    var explosion = Explosion(lifeTime = SpaceFieldConfig.explosionLifeTime,
+                              initialPosition = position,
+                              radius = SpaceFieldConfig.explosionRadius,
+                              mass = SpaceFieldConfig.explosionMass)
     this.explosions += explosion
   }
 

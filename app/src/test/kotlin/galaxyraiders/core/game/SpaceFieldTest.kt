@@ -234,7 +234,7 @@ class SpaceFieldTest {
     spaceField.generateExplosion(Point2D(0.0, 0.0))
 
     val explosion = spaceField.explosions.last()
-    val expectedExplosionTimer = EXPLOSION_LIFE_TIME - 1
+    val expectedExplosionTimer = explosion.lifeTime - 1
     val expectedExplosionTrigger = false
 
     spaceField.updateExplosions()
@@ -420,7 +420,7 @@ class SpaceFieldTest {
 
     val explosion = spaceField.explosions.last()
 
-    repeat(EXPLOSION_LIFE_TIME) { explosion.update() }
+    repeat(explosion.lifeTime) { explosion.update() }
 
     spaceField.trimExplosions()
 
@@ -433,7 +433,7 @@ class SpaceFieldTest {
 
     val explosion = spaceField.explosions.last()
 
-    repeat(EXPLOSION_LIFE_TIME-1) { explosion.update() }
+    repeat(explosion.lifeTime-1) { explosion.update() }
 
     spaceField.trimExplosions()
 
