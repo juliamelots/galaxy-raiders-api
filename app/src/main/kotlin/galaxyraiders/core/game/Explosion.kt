@@ -10,13 +10,11 @@ class Explosion(
   mass: Double
 ) :
   SpaceObject("Explosion", '*', initialPosition, Vector2D(0.0, 0.0), radius, mass) {
-  var isTriggered: Boolean = false
-
   var timer: Int = lifeTime
     private set
 
   fun update() {
     this.timer--
-    this.isTriggered = (this.timer <= 0)
+    this.deletionTriggered = (this.timer <= 0)
   }
 }

@@ -140,11 +140,22 @@ class GameEngineTest {
     missile.shift(Vector2D(dx, dy) - missile.velocity)
     missile.move()
 
+    val expectedAsteroidsSize = hardGame.field.asteroids.size - 1
+    val expectedMissilesSize = hardGame.field.missiles.size - 1
     val expectedExplosionsSize = hardGame.field.explosions.size + 1
+    val expectedAsteroidTrigger = true
+    val expectedMissileTrigger = true
     
     hardGame.handleCollisions()
+    hardGame.trimSpaceObjects()
     
-    assertEquals(expectedExplosionsSize, hardGame.field.explosions.size)
+    assertAll(
+      { assertEquals(expectedAsteroidsSize, hardGame.field.asteroids.size) },
+      { assertEquals(expectedMissilesSize, hardGame.field.missiles.size) },
+      { assertEquals(expectedExplosionsSize, hardGame.field.explosions.size) },
+      { assertEquals(expectedAsteroidTrigger, asteroid.deletionTriggered) },
+      { assertEquals(expectedMissileTrigger, missile.deletionTriggered) }
+    )
   }
 
   @Test
@@ -184,7 +195,7 @@ class GameEngineTest {
 
     assertAll(
       { assertEquals(expectedExplosionTimer, explosion.timer) },
-      { assertEquals(expectedExplosionTrigger, explosion.isTriggered) },
+      { assertEquals(expectedExplosionTrigger, explosion.deletionTriggered) },
     )
   }
   

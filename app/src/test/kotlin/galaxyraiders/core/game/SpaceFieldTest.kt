@@ -242,7 +242,7 @@ class SpaceFieldTest {
     
     assertAll(
       { assertEquals(expectedExplosionTimer, explosion.timer) },
-      { assertEquals(expectedExplosionTrigger, explosion.isTriggered) },
+      { assertEquals(expectedExplosionTrigger, explosion.deletionTriggered) },
     )
   }
 

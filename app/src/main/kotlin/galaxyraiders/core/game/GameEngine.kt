@@ -100,6 +100,8 @@ class GameEngine(
         first.collideWith(second, GameEngineConfig.coefficientRestitution)
         if ((first is Asteroid && second is Missile) || (first is Missile && second is Asteroid)) {
           this.field.generateExplosion(first.center)
+          first.deletionTriggered = true
+          second.deletionTriggered = true
           this.field.score.destroyedAsteroids++
           this.field.score.finalScore += if (first is Asteroid) explosionScore(first) else explosionScore(second)
         }

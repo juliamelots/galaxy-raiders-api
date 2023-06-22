@@ -32,6 +32,6 @@ class ExplosionTest {
   @Test
   fun `it is triggered after EXPLOSION_LIFE_TIME frames `() {
     repeat(explosion.lifeTime) { explosion.update() }
-    assertTrue(explosion.isTriggered)
+    assertTrue(explosion.deletionTriggered)
   }
 }
