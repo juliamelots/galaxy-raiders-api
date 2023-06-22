@@ -47,7 +47,6 @@ object ScoreConfig {
     var leaderList: MutableList<Score> = getJSONData(LEADER_BOARD_PATH)
     leaderList.add(newScore)
     leaderList.sortedByDescending { it.finalScore }
-    leaderList.take(3)
-    setJSONData(LEADER_BOARD_PATH, leaderList)
+    setJSONData(LEADER_BOARD_PATH, leaderList.take(3).toMutableList())
   }
 }
