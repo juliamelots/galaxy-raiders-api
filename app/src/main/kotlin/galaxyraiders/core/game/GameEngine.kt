@@ -39,7 +39,7 @@ class GameEngine(
   var playerAlive = true
 
   fun execute() {
-    while (playerAlive) {
+    while (this.field.ship.isAlive()) {
       val duration = measureTimeMillis { this.tick() }
 
       Thread.sleep(
@@ -100,7 +100,7 @@ class GameEngine(
       if (first.impacts(second)) {
         first.collideWith(second, GameEngineConfig.coefficientRestitution)
         if ((first is Asteroid && second is SpaceShip) || (first is SpaceShip && second is Asteroid))
-          playerAlive = false
+          this.field.ship.takeDamage()
         if ((first is Asteroid && second is Missile) || (first is Missile && second is Asteroid)) {
           this.field.generateExplosion(first.center)
           first.deletionTriggered = true

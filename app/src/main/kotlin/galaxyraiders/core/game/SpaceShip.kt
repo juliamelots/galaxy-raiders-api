@@ -17,6 +17,16 @@ class SpaceShip(
   mass: Double
 ) :
   SpaceObject("SpaceShip", '@', initialPosition, initialVelocity, radius, mass) {
+  var health: Int = 5
+  
+  fun takeDamage() {
+    this.health -= 1
+  }
+
+  fun isAlive(): Boolean {
+    return health > 0
+  }
+
   fun boostUp() {
     this.velocity += Vector2D(dx = 0.0, dy = SpaceShipConfig.boost)
   }
