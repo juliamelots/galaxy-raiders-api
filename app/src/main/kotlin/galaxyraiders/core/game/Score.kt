@@ -13,6 +13,9 @@ data class Score (
 )
 
 object ScoreConfig {
+  const val SCORE_BOARD_PATH: String = "src/main/kotlin/galaxyraiders/core/score/Scoreboard.json"
+  const val LEADER_BOARD_PATH: String = "src/main/kotlin/galaxyraiders/core/score/Leaderboard.json"
+
   fun configJSONFile(filePath: String) : File {
     var file: File = File(filePath)
     if (!file.exists()) {
@@ -46,7 +49,7 @@ object ScoreConfig {
   fun updateLeaderBoard(newScore: Score) {
     var leaderList: MutableList<Score> = getJSONData(LEADER_BOARD_PATH)
     leaderList.add(newScore)
-    leaderList.sortedByDescending { it.finalScore }
+    leaderList.sortByDescending { it.finalScore }
     setJSONData(LEADER_BOARD_PATH, leaderList.take(3).toMutableList())
   }
 }

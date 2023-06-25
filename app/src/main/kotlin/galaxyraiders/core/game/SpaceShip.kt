@@ -24,7 +24,7 @@ class SpaceShip(
   }
 
   fun isAlive(): Boolean {
-    return health > 0
+    return this.health > 0
   }
 
   fun boostUp() {

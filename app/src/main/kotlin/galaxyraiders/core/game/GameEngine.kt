@@ -8,8 +8,6 @@ import galaxyraiders.ports.ui.Visualizer
 import kotlin.system.measureTimeMillis
 
 const val MILLISECONDS_PER_SECOND: Int = 1000
-const val SCORE_BOARD_PATH: String = "src/main/kotlin/galaxyraiders/core/score/Scoreboard.json"
-const val LEADER_BOARD_PATH: String = "src/main/kotlin/galaxyraiders/core/score/Leaderboard.json"
 
 object GameEngineConfig {
   private val config = Config(prefix = "GR__CORE__GAME__GAME_ENGINE__")
@@ -36,7 +34,6 @@ class GameEngine(
   )
 
   var playing = true
-  var playerAlive = true
 
   fun execute() {
     while (this.field.ship.isAlive()) {
@@ -99,8 +96,9 @@ class GameEngine(
         (first, second) ->
       if (first.impacts(second)) {
         first.collideWith(second, GameEngineConfig.coefficientRestitution)
-        if ((first is Asteroid && second is SpaceShip) || (first is SpaceShip && second is Asteroid))
+        if ((first is Asteroid && second is SpaceShip) || (first is SpaceShip && second is Asteroid)) {
           this.field.ship.takeDamage()
+        }
         if ((first is Asteroid && second is Missile) || (first is Missile && second is Asteroid)) {
           this.field.generateExplosion(first.center)
           first.deletionTriggered = true
